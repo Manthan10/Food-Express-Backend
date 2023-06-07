@@ -1,21 +1,36 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
+const { body, validationResult } = require("express-validator");
 
-router.post("/createuser", async (req, res) => {
-  try {
-    await User.create({
-      name: "Manthan Gigoo",
-      password: "123456",
-      email: "manthangigoo10@gmail.com",
-      location: "my location",
-    });
+router.post(
+  "/createuser",
+  [
+    body("email").isEmail(),
+    body("name").isLength({ min: 5 }),
+    body("password", "incorrect password").isLength({ min: 6 }),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+      // next();
+      res.status(400).json({ errors: errors.array() });
+    }
 
-    res.json({ success: true });
-  } catch (error) {
-    console.log(error);
-    res.json({ success: false });
+    try {
+      await User.create({
+        name: req.body.name,
+        password: req.body.password,
+        email: req.body.email,
+        location: req.body.location,
+      });
+
+      res.json({ success: true });
+    } catch (error) {
+      console.log(error);
+      res.json({ success: false });
+    }
   }
-});
+);
 
 module.exports = router;
