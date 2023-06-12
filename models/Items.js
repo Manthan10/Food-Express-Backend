@@ -3,27 +3,32 @@ const { Schema } = mongoose;
 
 // designing our schema
 
-const UserSchema = new Schema({
+const ItemSchema = new Schema({
+  CategoryName: {
+    type: String,
+    required: true,
+  },
+
   name: {
     type: String,
     required: true,
   },
-  location: {
+
+  img: {
     type: String,
     required: true,
   },
-  email: {
+
+  options: [
+    {
+      half: String,
+      full: String,
+    },
+  ],
+  description: {
     type: String,
     required: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  date: {
-    type: Date,
-    default: Date.now,
   },
 });
 
-module.exports = mongoose.model("user", UserSchema);
+module.exports = mongoose.model("item", ItemSchema);
